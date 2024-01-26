@@ -4,16 +4,16 @@ namespace microservice_prac
 {
     public interface IPlatformRepo
     {
-        bool SaveChanges();
+        Task<bool> SaveChanges();
 
-        IEnumerable<Platform> GetAllPlatforms();
+        Task<IEnumerable<Platform>> GetAllPlatforms();
 
-        Platform GetPlatformById(int id);
+        Task<Platform?> GetPlatformById(int id);
 
-        void CreatePlatform(Platform plat);
+        Task CreatePlatform(Platform plat);
 
-        Platform UpdatePlatform(Platform plat);
+        Task<Platform> UpdatePlatform(Platform plat);
 
-        void DeletePlatform(Platform plat);
+        Task DeletePlatform(Platform plat);
     }
 }

@@ -1,5 +1,6 @@
 using microservice_prac.Data;
 using microservice_prac.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace microservice_prac
 {
@@ -12,52 +13,42 @@ namespace microservice_prac
             _context = context;
         }
 
-        public bool SaveChanges()
+        public async Task<bool> SaveChanges()
         {
-            return (_context.SaveChanges() >= 0);
+            return await _context.SaveChangesAsync() >= 0;
         }
 
-        public IEnumerable<Platform> GetAllPlatforms()
+        public async Task<IEnumerable<Platform>> GetAllPlatforms()
         {
-            return _context.Platform.ToList();
+            return await _context.Platform.ToListAsync();
         }
 
-        public Platform GetPlatformById(int id)
+        public async Task<Platform?> GetPlatformById(int id)
         {
-            Platform? plat = _context.Platform.FirstOrDefault(p => p.Id == id);
-
-            if (plat == null)
-            {
-                throw new Exception("Platform not found");
-            }
+            Platform? plat = await _context.Platform.FirstOrDefaultAsync(p => p.Id == id);
 
             return plat;
         }
 
-        public void CreatePlatform(Platform plat)
+        public async Task CreatePlatform(Platform plat)
         {
-            if (plat == null)
-            {
-                throw new ArgumentNullException(nameof(plat));
-            }
-
-            _context.Platform.Add(plat);
+            await _context.Platform.AddAsync(plat);
         }
 
-        public void DeletePlatform(Platform plat)
+        public async Task<Platform> UpdatePlatform(Platform plat)
         {
-            if (plat == null)
-            {
-                throw new ArgumentNullException(nameof(plat));
-            }
+            _context.Platform.Update(plat);
 
+            await this.SaveChanges();
+
+            return plat;
+        }
+
+        public async Task DeletePlatform(Platform plat)
+        {
             _context.Platform.Remove(plat);
-        }
 
-        public Platform UpdatePlatform(Platform plat)
-        {
-            // Nothing yet
-            return plat;
+            await this.SaveChanges();
         }
     }
 }
